@@ -1,0 +1,3 @@
+[submodule "MemoryManager"]
+	path = MemoryManager
+	url = https://github.com/tensign1444/MemoryManager.git
