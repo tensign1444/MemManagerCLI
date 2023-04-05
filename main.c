@@ -16,36 +16,41 @@ void print_help() {
 
 int main() {
     char command[100];
-
+    LIST *memoryManager = initMemory(300050);
     while (1) {
         printf(">: ");
         fgets(command, 100, stdin);
         command[strcspn(command, "\n")] = 0; // remove trailing newline
 
-        if (strcmp(command, "hello") == 0) {
+        char cmd[20];
+        sscanf(command, "%s", cmd); // extract first word
+
+        char* token = strtok(command, " ");
+        token = strtok(NULL, " ");
+
+        size_t second_arg = strtoul(token, NULL, 10);
+        if (strcmp(cmd, "hello") == 0) {
                 printf("Hello, I am a memory manager simulation. I can show you how your operating systems\n "
                        "memory manager will manage your memory of applications running.\n");
         }
-        else if (strcmp(command, "free") == 0) {
-            freeNode(NODE* H); // need to get user input
+        else if (strcmp(cmd, "free") == 0) {
+            freeMemoryLocation(memoryManager, second_arg);
         }
-        else if (strcmp(command, "malloc") == 0) {
-            Malloc(0x1000);
+        else if (strcmp(cmd, "malloc") == 0) {
+            Malloc(memoryManager,second_arg);
         }
-        else if (strcmp(command, "dump") == 0) {
+        else if (strcmp(cmd, "dump") == 0) {
             DumpMemoryList();
         }
-        else if (strcmp(command, "help") == 0) {
+        else if (strcmp(cmd, "help") == 0) {
             print_help();
         }
-        else if (strcmp(command, "quit") == 0) {
+        else if (strcmp(cmd, "quit") == 0) {
             break;
         } else {
-            printf("Unknown command: %s\n", command);
+            printf("Unknown command: %s\n", cmd);
         }
     }
 
     return 0;
 }
-
-re
