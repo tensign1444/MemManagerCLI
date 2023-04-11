@@ -18,6 +18,7 @@ void print_help() {
 int main() {
     char command[100];
     LIST *memoryManager = initMemory(30000);
+    NODE *tempHolder;
     while (1) {
         printf(">: ");
         fgets(command, 100, stdin);
@@ -28,10 +29,11 @@ int main() {
                        "memory manager will manage your memory of applications running.\n");
         }
         else if (strcmp(command, "free") == 0) {
-            freeNode(h); // need to get user input
+            freeMemoryLocation(memoryManager,h); // need to get user input
         }
         else if (strcmp(command, "malloc") == 0) {
-            Malloc(0x1000);
+           tempHolder = Malloc(memoryManager,0x1000);
+           printf("Memory Address: %p", tempHolder);
         }
         else if (strcmp(command, "dump") == 0) {
             DumpMemoryList();
