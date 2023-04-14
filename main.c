@@ -13,13 +13,25 @@ void print_help() {
     printf("  quit      quit the program\n");
 }
 
+void getMemorySize(int *value) {
+    printf("Enter the amount of memory total you want: ");
+    scanf("%d", value);
+}
 
-
+void getPointerToFree(void **ptr) {
+    unsigned long long address;
+    printf("Enter a memory address to free: ");
+    scanf("%llx", &address);
+    *ptr = (void *)address;
+}
 
 int main() {
     char command[100];
-    LIST *memoryManager = initMemory(30000, false);
+    int value;
+    getMemorySize(&value);
+    LIST *memoryManager = initMemory(value, false);
     NODE *p;
+
 
     while (1) {
         setvbuf(stdout, NULL, _IONBF, 0);
@@ -34,21 +46,22 @@ int main() {
         token = strtok(NULL, " ");
 
         char* endptr;
-        NODE *ptr;
         size_t second_arg;
+        unsigned long long address;
+        void *pointer;
 
         if (strcmp(cmd, "hello") == 0) {
             printf("Hello, I am a memory manager simulation. I can show you how your operating systems\n "
                    "memory manager will manage your memory of applications running.\n");
         }
         else if (strcmp(cmd, "free") == 0) {
-            ptr = (NODE*)strtoul(token, &endptr, 16);
-            freeMemoryLocation(memoryManager, ptr);
+            getPointerToFree(&pointer);
+            freeMemoryLocation(memoryManager, pointer);
             DumpMemoryList(memoryManager);
         }
         else if (strcmp(cmd, "malloc") == 0) {
             second_arg = strtoul(token, &endptr, 10);
-            printf("0x%p\n", Malloc(memoryManager,second_arg));
+            printf("Memory address:0x%llx\n", (unsigned long long) Malloc(memoryManager,second_arg));
             DumpMemoryList(memoryManager);
         }
         else if (strcmp(cmd, "dump") == 0) {
