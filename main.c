@@ -25,18 +25,37 @@ void getPointerToFree(void **ptr) {
     *ptr = (void *)address;
 }
 
+void greet_user() {
+    printf("Hello, I am a memory manager simulation. I can show you how your operating systems\n "
+           "memory manager will manage your memory of applications running.\n");
+}
+
+void handle_free(LIST *memoryManager) {
+    void *pointer;
+    getPointerToFree(&pointer);
+    freeMemoryLocation(memoryManager, pointer);
+    DumpMemoryList(memoryManager);
+}
+
+void handle_malloc(LIST *memoryManager, char *token) {
+    char *endptr;
+    size_t second_arg = strtoul(token, &endptr, 10);
+    printf("Memory address: 0x%llx\n", (unsigned long long)Malloc(memoryManager, second_arg));
+    DumpMemoryList(memoryManager);
+}
+
 int main() {
-    char command[100];
+    const int MAX_COMMAND_LENGTH = 100;
+    char command[MAX_COMMAND_LENGTH];
     int value;
+
     getMemorySize(&value);
     LIST *memoryManager = initMemory(value, false);
-    NODE *p;
-
 
     while (1) {
         setvbuf(stdout, NULL, _IONBF, 0);
         printf(">: ");
-        fgets(command, 100, stdin);
+        fgets(command, MAX_COMMAND_LENGTH, stdin);
         command[strcspn(command, "\n")] = 0; // remove trailing newline
 
         char cmd[20];
@@ -45,24 +64,14 @@ int main() {
         char* token = strtok(command, " ");
         token = strtok(NULL, " ");
 
-        char* endptr;
-        size_t second_arg;
-        unsigned long long address;
-        void *pointer;
-
         if (strcmp(cmd, "hello") == 0) {
-            printf("Hello, I am a memory manager simulation. I can show you how your operating systems\n "
-                   "memory manager will manage your memory of applications running.\n");
+            greet_user();
         }
         else if (strcmp(cmd, "free") == 0) {
-            getPointerToFree(&pointer);
-            freeMemoryLocation(memoryManager, pointer);
-            DumpMemoryList(memoryManager);
+            handle_free(memoryManager);
         }
         else if (strcmp(cmd, "malloc") == 0) {
-            second_arg = strtoul(token, &endptr, 10);
-            printf("Memory address:0x%llx\n", (unsigned long long) Malloc(memoryManager,second_arg));
-            DumpMemoryList(memoryManager);
+            handle_malloc(memoryManager, token);
         }
         else if (strcmp(cmd, "dump") == 0) {
             DumpMemoryList(memoryManager);
@@ -73,7 +82,8 @@ int main() {
         else if (strcmp(cmd, "quit") == 0) {
             freeMemory(memoryManager);
             break;
-        } else {
+        }
+        else {
             printf("Unknown command: %s\n", cmd);
         }
     }
